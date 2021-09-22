@@ -31,7 +31,7 @@ class Regression():
     phiT_y = np.matmul(np.transpose(phi), y)
     w = np.matmul(phiTphi_inv, phiT_y)
     #have output as files
-    return w
+    return np.around(w, decimals=4)
 
   def grad_descent_linear_reg(self, json_data):
     learning_rate = json_data['learning rate']
@@ -41,12 +41,12 @@ class Regression():
 
     w = np.ones(len(phi[0]))
 
-    for i in range(len(phi)):
-      for _ in range(num_iter):
-        w_new = w + learning_rate * ((y[i] - np.dot(w, phi[i,:])) * phi[i,:])
+    for _ in range(num_iter):
+      for i in range(len(phi)):
+        w_new = w + (learning_rate * ((y[i] - np.dot(w, phi[i,:])))) * phi[i,:]
         w = w_new
 
-    return w
+    return np.around(w, decimals = 4)
 
 def write_to_file(args, analytical_sol, grad_descent):
   x = [i for i in args.inp_file_name if i.isdigit()]
