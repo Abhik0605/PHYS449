@@ -23,8 +23,8 @@ class Regression():
     self.data = data
 
   def analytical_linear_reg(self):
-    phi = self.data[:,:2]
-    y = self.data[:,2]
+    phi = self.data[:,:-1]
+    y = self.data[:,-1]
 
     phiTphi = np.matmul(np.transpose(phi), phi)
     phiTphi_inv = np.linalg.inv(phiTphi)
@@ -36,21 +36,16 @@ class Regression():
   def grad_descent_linear_reg(self, json_data):
     learning_rate = json_data['learning rate']
     num_iter = json_data['num iter']
-    phi = self.data[:,:2]
-    y = self.data[:,2]
+    phi = self.data[:,:-1]
+    y = self.data[:,-1]
 
-    w_1 = 1
-    w_2 = 1
-
-    w = np.array([w_1, w_2])
+    w = np.ones(len(phi[0]))
 
     for i in range(len(phi)):
       for _ in range(num_iter):
         w_new = w + learning_rate * ((y[i] - np.dot(w, phi[i,:])) * phi[i,:])
         w = w_new
-        #print(w_new)
 
-    #have output as files
     return w
 
 def write_to_file(args, analytical_sol, grad_descent):
@@ -82,5 +77,3 @@ if __name__ == "__main__":
   grad_descent = regression_obj.grad_descent_linear_reg(json_data)
 
   write_to_file(args, analytical_sol, grad_descent)
-
-  print(analytical_sol, '\n', grad_descent)
