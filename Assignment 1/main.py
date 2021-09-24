@@ -2,7 +2,7 @@ import numpy as np
 import argparse
 import json
 
-
+# class to extract data
 class data_extraction():
   def __init__(self, input_file, json_file):
     self.input_file = input_file
@@ -17,7 +17,7 @@ class data_extraction():
     data = json.loads(f.read())
     return data
 
-
+# class for regression
 class Regression():
   def __init__(self, data):
     self.data = data
@@ -30,7 +30,7 @@ class Regression():
     phiTphi_inv = np.linalg.inv(phiTphi)
     phiT_y = np.matmul(np.transpose(phi), y)
     w = np.matmul(phiTphi_inv, phiT_y)
-    #have output as files
+    #output are the wieghts of the model
     return np.around(w, decimals=4)
 
   def grad_descent_linear_reg(self, json_data):
@@ -45,9 +45,10 @@ class Regression():
       for i in range(len(phi)):
         w_new = w + (learning_rate * ((y[i] - np.dot(w, phi[i,:])))) * phi[i,:]
         w = w_new
-
+    # output are the weights of the model
     return np.around(w, decimals = 4)
 
+# function for writing the output file
 def write_to_file(args, analytical_sol, grad_descent):
   x = [i for i in args.inp_file_name if i.isdigit()]
   f = open(f'data/{x[0]}.out', 'w')
