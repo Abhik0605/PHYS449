@@ -17,24 +17,17 @@ class Net(nn.Module):
         # 1 input image channel, 6 output channels, 5x5 square convolution
         # kernel)
         # an affine operation: y = Wx + b
-        self.fc1 = nn.Linear(196, 98)
-        self.fc2 = nn.Linear(98, 84)
-        self.fc3 = nn.Linear(84, 5)
+        self.fc1 = nn.Linear(196, 96)
+        self.fc2 = nn.Linear(96, 5)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = self.fc2(x)
 
         return x
 
     # Reset function for the training weights
     # Use if the same network is trained multiple times.
-    def reset(self):
-        self.fc1.reset_parameters()
-        self.fc2.reset_parameters()
-        self.fc3.reset_parameters()
-
 
 
 
