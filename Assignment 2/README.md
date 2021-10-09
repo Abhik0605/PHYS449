@@ -15,7 +15,7 @@
 To run `main.py`, use
 
 ```sh
-python main.py <csv input> <json hparams input>
+python main.py --input_csv <csv input> --param <json hparams input>
 ```
 For help run
 ```
@@ -23,6 +23,7 @@ python main.py --help
 ```
 
 File structure looks like
+
 ```
 Assignment 2
 │
