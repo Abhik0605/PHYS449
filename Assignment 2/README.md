@@ -31,17 +31,17 @@ Assignment 2
 │
 └───inputs
 │    └ even_mnist.csv
-│    └hyper_param.json
+│    └ hyper_param.json
 │
 │
 │
 └───notebooks  #notebooks
-│    │─ test.ipynb
+│    └ test.ipynb
 │
 └───src
-│   └data_gen.py  # Creates dataset
-│   └nn_gen.py  #neural net
-│   └train.py  #train neural net
+│   └ data_gen.py  # Creates dataset
+│   └ nn_gen.py  #neural net
+│   └ train.py  #train neural net
 │
 │
 └──main.py #run this file
