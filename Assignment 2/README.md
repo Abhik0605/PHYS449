@@ -31,8 +31,8 @@ Assignment 2
 │
 │
 └───inputs
-│    └ even_mnist.csv
-│    └ hyper_param.json
+│    └ even_mnist.csv #input data
+│    └ hyper_param.json # hyper params
 │
 │
 │
@@ -44,6 +44,8 @@ Assignment 2
 │   └ nn_gen.py  #neural net
 │   └ train.py  #train neural net
 │
+│
+└─── results #place where you store results
 │
 └──main.py #run this file
 ```
