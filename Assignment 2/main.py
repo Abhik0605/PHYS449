@@ -26,6 +26,7 @@ def plot_results(test_loss, train_loss):
     ax2.set_title('Training Loss')
     ax1.plot(y_test, test_loss)
     ax1.set_title('Test Loss')
+    plt.savefig('results/plot.png')
     plt.show()
 
 
