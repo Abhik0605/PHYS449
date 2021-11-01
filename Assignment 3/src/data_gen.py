@@ -1,6 +1,5 @@
 import numpy as np
 import os
-from scipy.integrate import solve_ivp
 import torch
 from torch.utils.data import Dataset
 
@@ -38,8 +37,8 @@ def generate_data(f, lb, ub, n):
   z = 0
   for i in range(nx):
       for j in range(ny):
-          sol = solve_ivp(f, [0, epsilon], [xv[i, j], yv[i, j]])
-          test[z] = xv[i, j], yv[i, j], sol.y[0][1], sol.y[1][1]
+          f_dt = np.array([xv[i, j], yv[i, j]]) +  [f(0, [xv[i, j], yv[i, j]])[0]*epsilon,  f(0, [xv[i, j], yv[i, j]])[1]*epsilon]
+          test[z] = xv[i, j], yv[i, j], f_dt[0], f_dt[1]
           z += 1
 
   return test

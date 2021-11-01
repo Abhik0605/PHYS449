@@ -1,6 +1,6 @@
 {
   "exec":{
-    "learning_rate": 0.001,
+    "learning_rate": 0.01,
     "num_epochs": 5,
     "batch_size":64
     }

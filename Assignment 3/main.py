@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='ML with PyTorch')
     parser.add_argument('--param', help='parameter file name')
     parser.add_argument('-v', help = 'verbosity')
-    parser.add_argument('--res-path', help='path to save the test plots at')
+    parser.add_argument('--res-path', metavar='res_path', help='path to save the test plots at')
     parser.add_argument('--x-field', metavar = '--x_field', help='expression of the x-component of the vector field')
     parser.add_argument('--y-field', metavar= '--y_field', help='expression of the y-component of the vector field')
     parser.add_argument('--lb', help='lower bound for initial conditions')
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     ub = int(float(args.ub))
     lb = int(float(args.lb))
-    n = 240
+    n = 250
 
     file = open(args.param, "r")
     hparams = json.loads(file.read())
@@ -93,8 +93,8 @@ if __name__ == '__main__':
             path[j][i+2] = y_new.numpy()
             y = y_new
 
-    plot_results(path, lb, ub, x_field, y_field)
-    print(path)
+    plot_results(path, lb, ub, x_field, y_field, args.res_path)
 
+    print(data)
 
 

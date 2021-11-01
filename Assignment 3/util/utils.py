@@ -8,9 +8,9 @@ import matplotlib.patches as mpatches
 import random
 
 
-def plot_results(paths, lb, ub, x_field, y_field):
+def plot_results(paths, lb, ub, x_field, y_field, result_path):
     fig, ax = plt.subplots()
-    x,y = np.meshgrid(np.linspace(-1,1,10),np.linspace(-1,1,10))
+    x,y = np.meshgrid(np.linspace(lb,ub,25),np.linspace(lb,ub,25))
     u = eval(x_field)
     v = eval(y_field)
     number_of_colors = len(paths)
@@ -25,5 +25,5 @@ def plot_results(paths, lb, ub, x_field, y_field):
         patch = mpatches.PathPatch(string_path, facecolor="none", edgecolor=color[i], lw=2)
         plt.scatter(path[0][0], path[0][1], marker = 'o', color = color[i])
         ax.add_patch(patch)
-    plt.savefig('results/plot.png')
+    plt.savefig(result_path + '/plot.png')
     plt.show()
