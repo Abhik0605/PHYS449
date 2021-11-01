@@ -17,8 +17,8 @@ class Net(nn.Module):
         # 1 input image channel, 6 output channels, 5x5 square convolution
         # kernel)
         # an affine operation: y = Wx + b
-        self.fc1 = nn.Linear(196, 96)
-        self.fc2 = nn.Linear(96, 5)
+        self.fc1 = nn.Linear(2, 96)
+        self.fc2 = nn.Linear(96, 2)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
