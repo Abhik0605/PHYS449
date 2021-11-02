@@ -23,7 +23,7 @@ LOG = get_logger(log_file_name_prefix='log')
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='ML with PyTorch')
     parser.add_argument('--param', help='parameter file name')
-    parser.add_argument('-v', help = 'verbosity')
+    #parser.add_argument('-v', help = 'verbosity')
     parser.add_argument('--res-path', metavar='res_path', help='path to save the test plots at')
     parser.add_argument('--x-field', metavar = '--x_field', help='expression of the x-component of the vector field')
     parser.add_argument('--y-field', metavar= '--y_field', help='expression of the y-component of the vector field')
@@ -37,20 +37,20 @@ if __name__ == '__main__':
     u = lambda x, y: eval(x_field)
     v = lambda x, y: eval(y_field)
 
-    ode_obj = ODE(u, v)
-
-    f = ode_obj.func()
-
-    ub = int(float(args.ub))
-    lb = int(float(args.lb))
-    n = 1000
-
     file = open(args.param, "r")
     hparams = json.loads(file.read())
 
     learning_rate = hparams['exec']['learning_rate']
     epochs = hparams['exec']['num_epochs']
     batch_size = hparams['exec']['batch_size']
+
+    ode_obj = ODE(u, v)
+
+    f = ode_obj.func()
+
+    ub = int(float(args.ub))
+    lb = int(float(args.lb))
+    n = hparams['exec']['n']
 
     prev_time =time.time()
 
