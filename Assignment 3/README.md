@@ -1,4 +1,4 @@
-# PHYS449 Assignment 2
+# PHYS449 Assignment 3
 
 ## Dependencies
 
