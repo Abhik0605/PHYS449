@@ -37,10 +37,13 @@ def generate_data(f, lb, ub, n):
   z = 0
   for i in range(nx):
       for j in range(ny):
-      	# Euler's method to generate data'
-          f_dt = np.array([xv[i, j], yv[i, j]]) +  [f(0, [xv[i, j], yv[i, j]])[0]*epsilon,  f(0, [xv[i, j], yv[i, j]])[1]*epsilon]
-          test[z] = xv[i, j], yv[i, j], f_dt[0], f_dt[1]
-          z += 1
+      	# Euler's method to generate data
+          if np.isnan(f(0, [xv[i, j], yv[i, j]])[0]):
+              continue
+          else:
+            f_dt = np.array([xv[i, j], yv[i, j]]) +  [f(0, [xv[i, j], yv[i, j]])[0]*epsilon,  f(0, [xv[i, j], yv[i, j]])[1]*epsilon]
+            test[z] = xv[i, j], yv[i, j], f_dt[0], f_dt[1]
+            z += 1
 
   return test
 
