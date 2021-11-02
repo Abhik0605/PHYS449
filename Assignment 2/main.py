@@ -50,7 +50,6 @@ if __name__ == '__main__':
     epochs = hparams['exec']['num_epochs']
     batch_size = hparams['exec']['batch_size']
 
-
     test_data = data.sample(n=3000, random_state=1)
     train_data = data.drop(test_data.index)
 
