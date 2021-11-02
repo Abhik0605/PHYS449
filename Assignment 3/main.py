@@ -3,6 +3,7 @@ import json, argparse, sys
 import os
 import numpy as np
 import random
+import time
 
 from scipy.integrate import solve_ivp
 
@@ -12,11 +13,12 @@ import torch.nn.functional as f
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
-
 from src.data_gen import ODE, generate_data, CustomDataset
-from util.utils import  plot_results
+from util.utils import  plot_results, get_logger
 from src.nn_gen import Net
 from src.train import train_loop, test_loop
+
+LOG = get_logger(log_file_name_prefix='log')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='ML with PyTorch')
@@ -29,7 +31,7 @@ if __name__ == '__main__':
     parser.add_argument('--ub', help='upper bound for initial conditions')
     parser.add_argument('--n-tests',metavar='--n_tests', help='number of test trajectories to plot')
     args = parser.parse_args()
-
+    global_prev_time =time.time()
     x_field = args.x_field
     y_field = args.y_field
     u = lambda x, y: eval(x_field)
@@ -41,7 +43,7 @@ if __name__ == '__main__':
 
     ub = int(float(args.ub))
     lb = int(float(args.lb))
-    n = 250
+    n = 1000
 
     file = open(args.param, "r")
     hparams = json.loads(file.read())
@@ -50,7 +52,13 @@ if __name__ == '__main__':
     epochs = hparams['exec']['num_epochs']
     batch_size = hparams['exec']['batch_size']
 
+    prev_time =time.time()
+
     data = generate_data(f, lb, ub, n)
+
+    t_cost = time.time() - prev_time
+    LOG.info('Time for data generation {:.5f}s'.format(t_cost))
+
     device = torch.device("cpu") #change to gpu if need be
     model = Net().to(torch.device(device))
 
@@ -67,6 +75,7 @@ if __name__ == '__main__':
 
     loss_fn = nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+    prev_time =time.time()
 
     big_train_loss = []
     big_test_loss = []
@@ -76,6 +85,11 @@ if __name__ == '__main__':
       test_loss = test_loop(test_dataloader, model, loss_fn)
       big_train_loss.extend(train_loss)
       big_test_loss.extend(test_loss)
+
+    t_cost = time.time() - prev_time
+    LOG.info('Time for training {:.5f}s'.format(t_cost))
+
+    prev_time =time.time()
 
     model.eval()
     with torch.no_grad():
@@ -92,9 +106,13 @@ if __name__ == '__main__':
             y_new = model(y)
             path[j][i+2] = y_new.numpy()
             y = y_new
+    t_cost = time.time() - prev_time
 
     plot_results(path, lb, ub, x_field, y_field, args.res_path)
+    LOG.info('Time for plotting {:.5f}s'.format(t_cost))
+    t_cost = time.time() - global_prev_time
+    LOG.info('Total time {:.5f}s'.format(t_cost))
 
-    print(data)
+    #print(data)
 
 

@@ -7,7 +7,7 @@
 - argparse
 - python 3.8.10
 - pytorch
-- pandas
+- loguru (pip install loguru)
 - matplotlib
 
 ## Running `main.py`

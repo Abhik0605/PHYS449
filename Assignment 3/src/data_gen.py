@@ -33,10 +33,11 @@ def generate_data(f, lb, ub, n):
   y = np.linspace(lb, ub, ny)
   xv, yv = np.meshgrid(x, y)
   test = np.zeros((n*n, 4))
-  epsilon = 0.2
+  epsilon = 0.1
   z = 0
   for i in range(nx):
       for j in range(ny):
+      	# Euler's method to generate data'
           f_dt = np.array([xv[i, j], yv[i, j]]) +  [f(0, [xv[i, j], yv[i, j]])[0]*epsilon,  f(0, [xv[i, j], yv[i, j]])[1]*epsilon]
           test[z] = xv[i, j], yv[i, j], f_dt[0], f_dt[1]
           z += 1
