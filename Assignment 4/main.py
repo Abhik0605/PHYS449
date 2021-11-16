@@ -55,7 +55,7 @@ if __name__ == '__main__':
   # iteration for gibbs sampling
   k = 5
   # learning rate
-  lr = 0.000001
+  lr = 0.001
   # epochs
   epochs = 50
 
@@ -72,7 +72,8 @@ if __name__ == '__main__':
       # # print(x_tilde, x)
       # x_tilde = sample(x,lambda_mat)
 
-      lambda_grad = (x@x.T - x_tilde@x_tilde.T)
+      lambda_grad = (1/len(data))*(x@x.T - x_tilde@x_tilde.T)
+      # print(x@x.T)
       # print(np.sum(np.abs(lambda_grad)))
       lambda_mat = lambda_mat + lr*lambda_grad
 
@@ -87,6 +88,6 @@ if __name__ == '__main__':
   for k in range(len(temp)):
     output[f'{temp[k]}'] = f'{lambda_mat[temp[k]]}'
 
-  print(temp)
+  print(output)
 
 
