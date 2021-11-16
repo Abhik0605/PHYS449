@@ -6,6 +6,10 @@ from scipy.stats import entropy
 import argparse
 
 
+def KL_div(D, sample):
+  return -np.log(sigmoid(lambda_mat@x))
+
+
 def sample(x, lambda_mat):
   x = x.reshape(-1,1)
   x_tilde = sigmoid(lambda_mat@x)
@@ -13,9 +17,6 @@ def sample(x, lambda_mat):
   tilde_energy = x_tilde * lambda_mat@x_tilde
   x_energy = x * lambda_mat@x
   x_tilde = np.where(tilde_energy<x_energy, x_tilde, x_sample2)
-
-
-
 
   for j in range(k):
     # x_energy = x * lambda_mat@x    #x.T@lambda_mat@x
@@ -25,8 +26,6 @@ def sample(x, lambda_mat):
     x_sample2 = np.where(np.random.uniform(size=x.shape)<sigmoid(lambda_mat@x_tilde),1,0)
 
     sample_energy = x_sample1 * lambda_mat@x_sample1
-
-
 
   return x_tilde
 
@@ -42,7 +41,9 @@ if __name__ == '__main__':
   input_size = len(data[0])
   #initialize the weight matrix
 
-  foo = np.random.uniform(low=-1,high=1,size=4)
+  foo = np.random.uniform(low=0,high=1,size=4)
+  foo[0] = -foo[0]
+  print(foo)
   sp = diags([[0]*4,foo,foo],[0,1,-1])
 
   # for printing
@@ -55,9 +56,9 @@ if __name__ == '__main__':
   # iteration for gibbs sampling
   k = 5
   # learning rate
-  lr = 0.001
+  lr = 0.01
   # epochs
-  epochs = 50
+  epochs = 100
 
   last_sample = data[-1]
   # training loop
@@ -76,6 +77,7 @@ if __name__ == '__main__':
       # print(x@x.T)
       # print(np.sum(np.abs(lambda_grad)))
       lambda_mat = lambda_mat + lr*lambda_grad
+    print(np.mean(KL_div(len(data), x_tilde)))
 
   output = {}
   indices = []
@@ -83,7 +85,7 @@ if __name__ == '__main__':
     indices.append(i)
   temp = []
   for j in range(len(indices)):
-    temp.append((indices[j], indices[j-1]))
+    temp.append((indices[j-1], indices[j]))
 
   for k in range(len(temp)):
     output[f'{temp[k]}'] = f'{lambda_mat[temp[k]]}'
