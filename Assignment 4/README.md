@@ -6,7 +6,6 @@
 - numpy
 - argparse
 - python 3.8.10
-- pytorch
 - loguru (pip install loguru)
 - matplotlib
 
