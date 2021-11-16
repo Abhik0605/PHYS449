@@ -87,6 +87,6 @@ if __name__ == '__main__':
   for k in range(len(temp)):
     output[f'{temp[k]}'] = f'{lambda_mat[temp[k]]}'
 
-  print(output)
+  print(temp)
 
 
