@@ -86,7 +86,7 @@ if __name__ == '__main__':
   # learning rate
   lr = 0.001
   # epochs
-  epochs = 50
+  epochs = 100
 
   last_sample = data[-1]
   # training loop
