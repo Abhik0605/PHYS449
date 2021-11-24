@@ -4,30 +4,68 @@ import numpy as np
 from scipy.sparse import diags
 from scipy.stats import entropy
 import argparse
+import matplotlib.pyplot as plt
 
 
-def KL_div(D, sample):
-  return -np.log(sigmoid(lambda_mat@x))
+def KL_div(N, x, y, lambdas):
+  return np.sum((-1/N)*(np.log(np.sum(energy(x, y, lambdas))) + np.log(np.exp(energy(x, y, lambdas)))))
 
 
-def sample(x, lambda_mat):
-  x = x.reshape(-1,1)
-  x_tilde = sigmoid(lambda_mat@x)
-  # gibbs sampling
-  tilde_energy = x_tilde * lambda_mat@x_tilde
-  x_energy = x * lambda_mat@x
-  x_tilde = np.where(tilde_energy<x_energy, x_tilde, x_sample2)
+def energy(x, y, lambdas):
+  return lambdas*x.dot(np.transpose(y))
 
-  for j in range(k):
-    # x_energy = x * lambda_mat@x    #x.T@lambda_mat@x
-    tilde_energy = x_tilde * lambda_mat@x_tilde
 
-    x_sample1 = np.where(np.random.uniform(size=x.shape)<sigmoid(lambda_mat@x_tilde),1,0)
-    x_sample2 = np.where(np.random.uniform(size=x.shape)<sigmoid(lambda_mat@x_tilde),1,0)
+def energy_change(sigma,spin_index,J,h):
+    """
+    Computes the energy change if spin at
+    position spin_index is flipped.
+    Parameters:
+    sigma: configuration
+    spin_index: spin to be flipped
+    J, h : additional parameters
+    Returns:
+    ec: energy change
+    """
+    N_spins = len(sigma)
+    ec = 2*J/N_spins*sum(sigma[spin_index]
+                         *np.delete(sigma, spin_index))
+    +2*h*sigma[spin_index]
+    return(ec)
 
-    sample_energy = x_sample1 * lambda_mat@x_sample1
 
-  return x_tilde
+def metropolis(N,beta,J,h,iterations):
+    """
+    Metroplis-Hastings algorithm for Curie-Weiss model
+    Parameters:
+    N: number of spins
+    iterations: number of steps that the Markov chain takes
+    beta, J, h : additional parameters
+    Returns:
+    total_mag: empirical magnetization at each step i,
+    vector of length iterations
+    sigma: configuration at final step
+    """
+
+    # random initial spin assignment
+    sigma = np.random.choice([-1,1],N)
+
+    # preallocate variable
+    emp_mag = np.zeros(iterations)
+
+    for i in range(iterations):
+        # choose a random spin
+        spin_index = np.random.randint(N)
+
+        # draw a random uniform number between 0 and 1
+        x = np.random.random()
+        ec = energy_change(sigma,spin_index,J,h)
+
+        if x < np.exp(-beta*ec):
+            sigma[spin_index] = sigma[spin_index]*-1
+
+        emp_mag[i] = sum(sigma)/len(sigma)
+
+    return sigma
 
 
 if __name__ == '__main__':
@@ -39,46 +77,41 @@ if __name__ == '__main__':
       lines = f.readlines()
   data = extract_data(lines)
   input_size = len(data[0])
-  #initialize the weight matrix
 
-  foo = np.random.uniform(low=0,high=1,size=4)
-  foo[0] = -foo[0]
-  print(foo)
-  sp = diags([[0]*4,foo,foo],[0,1,-1])
+  pos_phase = np.zeros(input_size)
 
-  # for printing
-  lambda_mat = sp.toarray()
-
-  lambda_mat[0][-1] = foo[-1]
-  lambda_mat[-1][0] = foo[-1]
-  print(lambda_mat)
 
   # iteration for gibbs sampling
-  k = 5
+  k = 100
   # learning rate
-  lr = 0.01
+  lr = 0.001
   # epochs
   epochs = 100
 
   last_sample = data[-1]
   # training loop
-  for i in range(epochs):
-    print(f"Epoch {i+1}\n-------------------------------")
-    for x in data:
-      x = x.reshape(-1,1)
-      x_tilde = sigmoid(lambda_mat@x)
-      # gibbs sampling
-      for j in range(k):
-        x_tilde = np.where(np.random.uniform(size=x.shape)<sigmoid(lambda_mat@x_tilde),1,0)
-      # # print(x_tilde, x)
-      # x_tilde = sample(x,lambda_mat)
+  pos_phase = np.zeros(input_size)
+  lambdas = np.zeros((epochs, input_size))
+  loss_arr = []
+  for l in range(1, epochs):
+    print(f"Epoch {l}\n-------------------------------")
+    neg_phase = np.zeros(input_size)
 
-      lambda_grad = (1/len(data))*(x@x.T - x_tilde@x_tilde.T)
-      # print(x@x.T)
-      # print(np.sum(np.abs(lambda_grad)))
-      lambda_mat = lambda_mat + lr*lambda_grad
-    print(np.mean(KL_div(len(data), x_tilde)))
+    temp_data = np.zeros((k, input_size))
 
+    for j in range(k):
+      temp_data[j,:] = metropolis(input_size,1,1,1,10)
+
+    for i in range(input_size):
+      pos_phase[i] = data[:,i].dot(np.transpose(data[:,i-1]))
+      neg_phase[i] = temp_data[:,i].dot(np.transpose(temp_data[:,i-1]))
+
+    #print('neg_phase', pos_phase)
+    lambdas[l,:] = lambdas[l-1,:] + lr*(1/len(data))*(pos_phase - neg_phase)
+    for i in range(input_size):
+      loss = KL_div(len(temp_data), temp_data[:,i], temp_data[:,i-1], lambdas[l,:])
+    loss_arr.append(loss)
+    print(loss)
   output = {}
   indices = []
   for i in range(4):
@@ -88,8 +121,11 @@ if __name__ == '__main__':
     temp.append((indices[j-1], indices[j]))
 
   for k in range(len(temp)):
-    output[f'{temp[k]}'] = f'{lambda_mat[temp[k]]}'
+    output[f'{temp[k]}'] = f'{2*lambdas[-1,k]}'
 
+  plt.plot(loss_arr)
+  plt.savefig('plot.png')
+  plt.show()
   print(output)
 
 
