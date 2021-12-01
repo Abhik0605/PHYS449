@@ -1,7 +1,8 @@
 {
   "exec":{
     "learning_rate": 0.001,
-    "num_epochs": 10,
-    "batch_size":64
+    "num_epochs": 1,
+    "batch_size":64,
+    "capacity": 64
     }
 }
