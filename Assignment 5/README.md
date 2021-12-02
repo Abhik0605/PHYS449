@@ -21,7 +21,7 @@ python main.py -o outputs -n 100
 Additional arguments
 ```sh
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help            
   --input_csv INPUT_CSV
                         file_path_to_csv
   --param PARAM         parameter file name
