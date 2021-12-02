@@ -19,18 +19,13 @@ from torchvision.utils import save_image
 
 
 
-def plot_results(test_loss, train_loss, output_path):
+def plot_results(train_loss, output_path):
     y_train = np.linspace(0,len(train_loss),len(train_loss))
-    y_test = np.linspace(0,len(test_loss), len(test_loss))
-    fig = plt.figure()
-    ax1 = fig.add_subplot(121)
-    ax2 = fig.add_subplot(122)
 
-    ax2.plot(y_train, train_loss)
-    # ax2.set_ylim(0,1)
-    ax2.set_title('Training Loss')
-    ax1.plot(y_test, test_loss)
-    ax1.set_title('Test Loss')
+    plt.title('Training Loss')
+    plt.plot(y_train, train_loss)
+    plt.xlabel('Num Batches')
+    plt.ylabel('Loss')
     plt.savefig(f'{out_path}/loss.pdf')
     # plt.show()
 
@@ -115,4 +110,4 @@ if __name__ == '__main__':
 
     # print(val_loss)
 
-    plot_results(val_loss, train_loss, args.o)
+    plot_results(train_loss, args.o)
