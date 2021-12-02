@@ -40,9 +40,12 @@ param takes in param.json in the format defined below
     }
 }
 ```
+
 Additional feature: animation
+
 ```sh
 python main.py -o outputs -n 50 --animate True
 ```
+
 running the above command would result in
 ![](VAE.gif)
