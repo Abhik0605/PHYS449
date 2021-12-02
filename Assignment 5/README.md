@@ -48,4 +48,5 @@ python main.py -o outputs -n 50 --animate True
 ```
 
 running the above command would result in
+
 ![](VAE.gif)
