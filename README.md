@@ -1,4 +1,4 @@
-# PHYS449 Machine Learning in Physics
+# Machine Learning 
 
 This is a repository of my Assignments for my Machine Learning Course.
 
